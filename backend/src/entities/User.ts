@@ -1,10 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-
-export enum UserProfile {
-  ADMIN = "ADMIN",
-  COLABORADOR = "COLABORADOR",
-  APROVADOR = "APROVADOR"
-}
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from "typeorm";
+import bcrypt from "bcrypt";
 
 @Entity()
 export class User {
@@ -20,9 +15,12 @@ export class User {
   @Column()
   password: string;
 
-  @Column({
-    type: "enum",
-    enum: UserProfile
-  })
-  profile: UserProfile;
+  @Column()
+  profile: string; // Admin | Colaborador | Aprovador
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
 }
+

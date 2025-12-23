@@ -4,6 +4,7 @@ import cors = require("cors");
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
 
+
 dotenv.config();
 const app = express();
 app.use(cors());
@@ -16,6 +17,13 @@ app.use(cors({
 
 
 app.use(express.json());
+import userRoutes from "./routes/user.routes";
+import leadRoutes from "./routes/lead.routes";
+import authRoutes from "./routes/auth.routes";
+
+app.use("/users", userRoutes);
+app.use("/leads", leadRoutes);
+app.use("/auth", authRoutes);
 
 export const AppDataSource = new DataSource({
   type: process.env.DB_TYPE! as any, // postgres, mysql, sqlite
@@ -32,4 +40,5 @@ export const AppDataSource = new DataSource({
 AppDataSource.initialize().then(() => {
   console.log("Banco conectado!");
   app.listen(3000, () => console.log("Servidor rodando na porta 3000"));
+  
 });
